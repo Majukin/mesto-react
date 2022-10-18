@@ -19,7 +19,7 @@ class Api {
     }).then(this._checkResponse)
   }
 
-  saveUserChanges (data) {
+  saveUserChanges(data) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
@@ -57,23 +57,31 @@ class Api {
       })
     }).then(this._checkResponse)
   }
-
-  deleteCard(data) {
-    return fetch(`${this._url}/cards/${data._id}`, {
+ 
+  deleteCard(id) {
+    return fetch(`${this._url}/cards/${id}`, {
       method: 'DELETE',
       headers: this._headers
     }).then(this._checkResponse)
   }
 
-  likedCard(data) {
-    return fetch(`${this._url}/cards/likes/${data._id}`, {
+  changeLikeCardStatus(id, isLiked) {
+    if (isLiked) {
+      return this.dislikedCard(id);
+    } else {
+      return this.likedCard(id);
+    }
+  }
+
+  likedCard(id) {
+    return fetch(`${this._url}/cards/likes/${id}`, {
       method: 'PUT',
       headers: this._headers,
     }).then(this._checkResponse)
   }
 
-  dislikedCard (data) {
-    return fetch(`${this._url}/cards/likes/${data._id}`, {
+  dislikedCard(id) {
+    return fetch(`${this._url}/cards/likes/${id}`, {
       method: 'DELETE',
       headers: this._headers,
     }).then(this._checkResponse)
@@ -84,6 +92,7 @@ class Api {
   }
 }
 
+
 const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-49',
   headers: {
@@ -93,3 +102,4 @@ const api = new Api({
 });
 
 export default api;
+
