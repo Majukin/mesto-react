@@ -8,6 +8,9 @@ function Card(props) {
   const isOwn = props.card.owner._id === currentUser._id;//проверка карты
   const cardDeleteButtonClassName = `${isOwn ? 'element__delete-button ' : 'element__delete-button element__delete-button_hidden'}`;
 
+  function handleCardClick() {//попап картинка
+    props.onCardClick(props.card)
+  } 
   function handleLikeClick() { //лайк
     props.onCardLike(props.card)
   }
@@ -19,6 +22,7 @@ function Card(props) {
   return (
     <div className="element">
       <img
+        onClick={handleCardClick} 
         src={props.card.link}
         alt={props.card.name}
         className="element__image"

@@ -67,20 +67,20 @@ class Api {
 
   changeLikeCardStatus(id, isLiked) {
     if (isLiked) {
-      return this.dislikedCard(id);
+      return this.dislikeCard(id);
     } else {
-      return this.likedCard(id);
+      return this.likeCard(id);
     }
   }
 
-  likedCard(id) {
+  likeCard(id) {
     return fetch(`${this._url}/cards/likes/${id}`, {
       method: 'PUT',
       headers: this._headers,
     }).then(this._checkResponse)
   }
 
-  dislikedCard(id) {
+  dislikeCard(id) {
     return fetch(`${this._url}/cards/likes/${id}`, {
       method: 'DELETE',
       headers: this._headers,

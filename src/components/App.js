@@ -2,22 +2,20 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
-import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
-import api from '../utils/api';
+import api from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const App = () => {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
-  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
 
   React.useEffect(() => {
     api.getInitialData()
@@ -34,16 +32,18 @@ const App = () => {
   function handleCardLike(card) { // ставит/убирает лайк
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      const newCards = cards.map((c) => c._id === card._id ? newCard : c)
-      setCards(newCards);
+      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    }).catch((err) => {
+      console.error(err);
     });
   }
 
-  function handleCardDelete(card) { //удаляет карточку
-    const isOwn = card.owner._id === currentUser._id;
-    api.deleteCard(card._id, isOwn).then(() => {
-      const newCards = cards.filter((c) => c._id !== card._id && c);
+  function handleCardDelete(cardDelete) { //удаляет карточку
+    api.deleteCard(cardDelete._id).then(() => {
+      const newCards = cards.filter(card => card._id !== cardDelete._id);
       setCards(newCards);
+    }).catch((err) => {
+      console.error(err);
     });
   }
 
@@ -85,24 +85,26 @@ const App = () => {
         }
       )
   }
+  function handleCardClick(card) {
+    setSelectedCard(card)
+  } 
 
   function handleEditProfilePopupOpen() {
-    setEditProfilePopupOpen(!isEditProfilePopupOpen);
+    setIsEditProfilePopupOpen(true);
   }
 
   function handleAddPlacePopupOpen() {
-    setAddPlacePopupOpen(!isAddPlacePopupOpen);
+    setAddPlacePopupOpen(true);
   }
 
   function handleEditAvatarPopupOpen() {
-    setEditAvatarPopupOpen(!isEditAvatarPopupOpen);
+    setEditAvatarPopupOpen(true);
   }
 
   function closeAllPopups() {
-    setEditProfilePopupOpen(false);
+    setIsEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
-    setIsConfirmPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -112,6 +114,7 @@ const App = () => {
         <Header />
         <Main
           cards={cards}
+          onCardClick={handleCardClick} 
           onEditProfile={handleEditProfilePopupOpen}
           onAddPlace={handleAddPlacePopupOpen}
           onEditAvatar={handleEditAvatarPopupOpen}

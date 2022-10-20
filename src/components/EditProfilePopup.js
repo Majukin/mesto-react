@@ -11,7 +11,7 @@ function EditProfilePopup(props) {
     setName(e.target.value);
   }
 
-  function hanldeChangeDescription(e) {
+  function handleChangeDescription(e) {
     setDescription(e.target.value);
   }
 
@@ -26,7 +26,7 @@ function EditProfilePopup(props) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [props.isOpen, currentUser]);
 
   return (
     <PopupWithForm
@@ -44,7 +44,7 @@ function EditProfilePopup(props) {
       </div>
       <div className="popup__input-container">
         <input name="about" id="job" type="text" className="popup__input popup__input_type_job" size="358" required
-          minLength="2" maxLength="200" value={description || ""} onChange={hanldeChangeDescription}/>
+          minLength="2" maxLength="200" value={description || ""} onChange={handleChangeDescription}/>
         <span id="job-error" className="popup__span"></span>
       </div>
     </PopupWithForm> 
