@@ -6,7 +6,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
-import api from '../utils/Api';
+import Api from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
   const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
 
   React.useEffect(() => {
-    api.getInitialData()
+    Api.getInitialData()
       .then((data) => {
         const [userData, cardsData] = data;
         setCards(cardsData);
@@ -31,24 +31,23 @@ const App = () => {
 
   function handleCardLike(card) { // ставит/убирает лайк
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+    Api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
     }).catch((err) => {
       console.error(err);
     });
   }
 
-  function handleCardDelete(cardDelete) { //удаляет карточку
-    api.deleteCard(cardDelete._id).then(() => {
-      const newCards = cards.filter(card => card._id !== cardDelete._id);
-      setCards(newCards);
+  function handleCardDelete(card) { //удаляет карточку
+    Api.deleteCard(card._id).then(() => {
+      setCards((state) => state.filter((c) => c._id !== card._id)); 
     }).catch((err) => {
       console.error(err);
     });
   }
 
   function handleUpdateUser(data) {//редактирует профиль
-    api.saveUserChanges(data)
+    Api.saveUserChanges(data)
       .then(
         (data) => {
           setCurrentUser(data);
@@ -61,7 +60,7 @@ const App = () => {
   }
 
   function handleUpdateAvatar(data) {//редактирует аватар
-    api.changedAvatar(data)
+    Api.changedAvatar(data)
       .then(
         (data) => {
           setCurrentUser(data);
@@ -74,7 +73,7 @@ const App = () => {
   }
 
   function handleAddPlaceSubmit(data) {//редактирует добавляет карточку
-    api.postNewCard(data)
+    Api.postNewCard(data)
       .then(
         (newCard) => {
           setCards([newCard, ...cards]);
@@ -85,6 +84,7 @@ const App = () => {
         }
       )
   }
+
   function handleCardClick(card) {
     setSelectedCard(card)
   } 
@@ -105,7 +105,7 @@ const App = () => {
     setIsEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
-    setSelectedCard({});
+    setSelectedCard({}); 
   }
 
   return (
@@ -114,12 +114,12 @@ const App = () => {
         <Header />
         <Main
           cards={cards}
-          onCardClick={handleCardClick} 
           onEditProfile={handleEditProfilePopupOpen}
           onAddPlace={handleAddPlacePopupOpen}
           onEditAvatar={handleEditAvatarPopupOpen}
           onCardLike={handleCardLike}
           onCardDeleteRequest={handleCardDelete}
+          onCardClick={handleCardClick}
         />
         <Footer />
         <EditProfilePopup

@@ -26,6 +26,7 @@ function Main(props) {
             card={card}
             onCardLike={props.onCardLike}
             onCardDeleteRequest={props.onCardDeleteRequest}
+            onCardClick={props.onCardClick}
           />
         ))}
       </section>
