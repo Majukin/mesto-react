@@ -6,7 +6,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
-import Api from '../utils/Api';
+import api from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
   const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
 
   React.useEffect(() => {
-    Api.getInitialData()
+    api.getInitialData()
       .then((data) => {
         const [userData, cardsData] = data;
         setCards(cardsData);
@@ -31,7 +31,7 @@ const App = () => {
 
   function handleCardLike(card) { // ставит/убирает лайк
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-    Api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
     }).catch((err) => {
       console.error(err);
@@ -39,7 +39,7 @@ const App = () => {
   }
 
   function handleCardDelete(card) { //удаляет карточку
-    Api.deleteCard(card._id).then(() => {
+    api.deleteCard(card._id).then(() => {
       setCards((state) => state.filter((c) => c._id !== card._id)); 
     }).catch((err) => {
       console.error(err);
@@ -47,7 +47,7 @@ const App = () => {
   }
 
   function handleUpdateUser(data) {//редактирует профиль
-    Api.saveUserChanges(data)
+    api.saveUserChanges(data)
       .then(
         (data) => {
           setCurrentUser(data);
@@ -60,7 +60,7 @@ const App = () => {
   }
 
   function handleUpdateAvatar(data) {//редактирует аватар
-    Api.changedAvatar(data)
+    api.changedAvatar(data)
       .then(
         (data) => {
           setCurrentUser(data);
@@ -73,7 +73,7 @@ const App = () => {
   }
 
   function handleAddPlaceSubmit(data) {//редактирует добавляет карточку
-    Api.postNewCard(data)
+    api.postNewCard(data)
       .then(
         (newCard) => {
           setCards([newCard, ...cards]);
